@@ -1,0 +1,53 @@
+@use "sass:math";
+
+.background {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(ellipse at bottom, hsl(0, 0%, 10%) 0%, hsl(0, 0%, 0%) 100%);
+}
+
+$particleSize: (
+        4vmin,
+        6vmin,
+        8vmin,
+        10vmin
+);
+$animationDuration: 60s;
+$amount: 40;
+
+.background span {
+  backface-visibility: hidden;
+  position: absolute;
+  animation-name: bg-animation;
+  animation-duration: $animationDuration;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  $colors: (
+          rgb(255 255 255),
+          rgb(13 202 240)
+  );
+  @for $i from 1 through $amount {
+    &:nth-child(#{$i}) {
+      $my-size: nth($particleSize, random(length($particleSize)));
+      width: $my-size;
+      height: $my-size;
+      color: nth($colors, random(length($colors)));
+      top: random(100) * 1%;
+      left: random(100) * 1%;
+      animation-duration:  math.random(math.div($animationDuration + 10s, 1s)) * 10;
+      animation-delay: math.random(math.div($animationDuration + 10s, 1s)) * 10;
+      transform-origin: (random(50) - 25) * 1vw (random(50) - 25) * 1vh;
+      $blurRadius: (random() + 0.5) * $my-size * 0.5;
+      $x: if(random() > 0.5, -1, 1);
+      box-shadow: ($my-size * 2 * $x) 0 $blurRadius currentColor;
+      opacity: math.div(random(20), 100);
+    }
+  }
+}
+
+@keyframes bg-animation {
+  100% { transform: translate3d(0, 0, 1px) rotate(360deg); }
+}
